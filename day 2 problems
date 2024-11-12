@@ -1,0 +1,149 @@
+                                                               DAY-2 PROGRAMS
+1.  Given an m x n grid and a ball at a starting cell, find the number of ways to move the ball 
+out of the grid boundary in exactly N steps. 
+Example: 
+Input: m=2,n=2,N=2,i=0,j=0 
+Output:6
+Code:
+
+m = 2
+n = 2
+N = 2
+i = 0
+j = 0
+dp = [[[0 for _ in range(n)] for _ in range(m)] for _ in range(N+1)]
+dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+count = 0
+dp[0][i][j] = 1
+for step in range(1, N+1):
+    for x in range(m):
+        for y in range(n):
+            for dx, dy in dirs:
+                nx, ny = x + dx, y + dy
+                if nx < 0 or nx >= m or ny < 0 or ny >= n:
+                    count += dp[step-1][x][y]
+                else:
+                    dp[step][nx][ny] += dp[step-1][x][y]
+print(count)
+output: 6
+ 
+
+2. You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have security systems connected, and it will automatically contact the police if two adjacent houses were broken into on the same night. Examples: 
+ Input : nums = [2, 3, 2] 
+Output : The maximum money you can rob without alerting the police is 3
+Code:
+nums = [2, 3, 2]
+if len(nums) == 1:
+    print(nums[0])
+else:
+    prev1 = 0
+    prev2 = 0
+    for i in range(len(nums) - 1):
+        temp = max(prev1, prev2 + nums[i])
+        prev2 = prev1
+        prev1 = temp
+    first_to_last_but_one = prev1
+    prev1 = 0
+    prev2 = 0
+    for i in range(1, len(nums)):
+        temp = max(prev1, prev2 + nums[i])
+        prev2 = prev1
+        prev1 = temp
+    second_to_last = prev1
+    max_money = max(first_to_last_but_one, second_to_last)
+    print(max_money)  
+output:3
+ 
+3.You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top? Examples: 
+Input: n=4 
+Output: 5
+Code:
+n = 5
+a, b = 1, 2
+for _ in range(n - 2):
+    a, b = b, a + b
+print(a)
+output:5
+ 
+
+4. A robot is located at the top-left corner of a m×n grid .The robot can only move either down or right at any point in time. The robot is trying to reach the bottom-right corner of the grid. How many possible unique paths are there? 
+Examples:
+ Input: m=7,n=3 
+Output: 28
+Code:
+m = 7
+n = 3
+dp = [[1] * n for _ in range(m)]
+for i in range(1, m):
+    for j in range(1, n):
+        dp[i][j] = dp[i-1][j] + dp[i][j-1]
+print(dp[m-1][n-1])  
+output: 28
+ 
+
+5. In a string S of lowercase letters, these letters form consecutive groups of the same character. For example, a string like s = "abbxxxxzyy" has the groups "a", "bb", "xxxx", "z", and "yy". A group is identified by an interval [start, end], where start and end denote the start and end indices (inclusive) of the group. In the above example, "xxxx" has the interval [3,6]. A group is considered large if it has 3 or more characters. Return the intervals of every large group sorted in increasing order by start index. 
+Example : 
+Input: s = "abbxxxxzzy"
+ Output: [[3,6]]
+Code:
+s = "abbxxxxzzy"
+result = []
+start = 0
+for i in range(1, len(s) + 1):
+    if i == len(s) or s[i] != s[start]:   
+        if i - start >= 3:
+            result.append([start, i - 1])
+        start = i
+print(result)
+output:[[3,6]]
+ 
+
+6. "The Game of Life, also known simply as Life, is a cellular automaton devised by the British mathematician John Horton Conway in 1970." The board is made up of an m x n grid of cells, where each cell has an initial state: live (represented by a 1) or dead (represented by a 0). Each cell interacts with its eight neighbors (horizontal, vertical, diagonal) using the following four rules Any live cell with fewer than two live neighbors dies as if caused by under population. 1. Any live cell with two or three live neighbors lives on to the next generation. 2. Any live cell with more than three live neighbors dies, as if by over population. 3. Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction. The next state is created by applying the above rules simultaneously to every cell in the current state, where births and deaths occur simultaneously. Given the current state of the m x n grid board, return the next state.
+
+ 
+Code:
+board = [[0, 1, 0],
+         [0, 0, 1],
+         [1, 1, 1],
+         [0, 0, 0]]
+m = len(board)
+n = len(board[0])
+for i in range(m):
+    for j in range(n):
+        live_neighbors = 0
+        for x in range(max(0, i-1), min(m, i+2)):
+            for y in range(max(0, j-1), min(n, j+2)):
+                if (x != i or y != j) and abs(board[x][y]) == 1:
+                    live_neighbors += 1
+        if board[i][j] == 1 and (live_neighbors < 2 or live_neighbors > 3):
+            board[i][j] = -1  
+        if board[i][j] == 0 and live_neighbors == 3:
+            board[i][j] = 2   
+for i in range(m):
+    for j in range(n):
+        if board[i][j] == -1:
+            board[i][j] = 0  # Dead
+        if board[i][j] == 2:
+            board[i][j] = 1  # Live
+print(board)  
+output:[[0,0,0],[1,0,1],[0,1,1],[0,1,0]]
+ 
+7. measure the champagne
+ 
+Code:
+poured = 2
+query_row = 1
+query_glass = 1
+dp = [[0] * (i + 1) for i in range(100)]
+dp[0][0] = poured
+for i in range(100):
+    for j in range(i + 1):
+        if dp[i][j] > 1:
+            excess = dp[i][j] - 1
+            dp[i][j] = 1  
+            if i + 1 < 100:
+                dp[i + 1][j] += excess / 2
+                dp[i + 1][j + 1] += excess / 2
+print(min(1, dp[query_row][query_glass]))  
+output:0.5
+ 
